@@ -42,7 +42,7 @@ const t23 = 49;
 const t13 = 8.57;
 
 // squared mass differences, 1e-4 eV^2
-const ms13 = 25.1;
+const ms12 = .75;
 const ms23 = 24.4;
 
 // default settings
@@ -51,7 +51,7 @@ const defaultNeutrinoData =
           t12,
           t23,
           t13,
-          ms13,
+          ms12,
           ms23,
           L_max: 100,
           is_e: 1,
@@ -83,7 +83,6 @@ const neutrino_controls = {
     t12: {
         title: '\\(\\theta_{12}\\)',
         unit: '\\(^\\circ\\)',
-        default_value: t12,
         category: 'angles',
         control: {
             type: 'slider',
@@ -96,7 +95,6 @@ const neutrino_controls = {
     t13: {
         title: '\\(\\theta_{13}\\)',
         unit: '\\(^\\circ\\)',
-        default_value: t13,
         category: 'angles',
         control: {
             type: 'slider',
@@ -109,7 +107,6 @@ const neutrino_controls = {
     t23: {
         title: '\\(\\theta_{23}\\)',
         unit: '\\(^\\circ\\)',
-        default_value: t23,
         category: 'angles',
         control: {
             type: 'slider',
@@ -119,36 +116,33 @@ const neutrino_controls = {
         }
     },
 
-    ms13: {
-        title: '\\(\\Delta m_{13}^2\\)',
+    ms12: {
+        title: '\\(\\Delta m_{12}^2\\)',
         unit: '\\(\\cdot 10^{-4}\\text{eV}^2\\)',
-        default_value: ms13,
         category: 'masses',
         control: {
             type: 'slider',
             min: 0,
             max: 50,
-            step: .1,
+            step: .01,
         }
     },
 
     ms23: {
         title: '\\(\\Delta m_{23}^2\\)',
         unit: '\\(\\cdot 10^{-4}\\text{eV}^2\\)',
-        default_value: ms23,
         category: 'masses',
         control: {
             type: 'slider',
             min: 0,
             max: 50,
-            step: .1,
+            step: .01,
         }
     },
 
     L_max: {
         title: '\\(L_\\text{max}\\)',
         unit: ' \\(\\text{km}\\)',
-        default_value: defaultNeutrinoData.L_max,
         category: 'observatory',
         control: {
             type: 'slider',
@@ -161,7 +155,6 @@ const neutrino_controls = {
     E: {
         title: '\\(E\\)',
         unit: ' \\(\\text{MeV}\\)',
-        default_value: defaultNeutrinoData.E,
         category: 'observatory',
         control: {
             type: 'slider',
@@ -174,7 +167,6 @@ const neutrino_controls = {
     is_e: {
         title: '\\(e\\)',
         unit: '',
-        default_value: defaultNeutrinoData.is_e,
         category: 'state',
         control: {
             type: 'slider',
@@ -187,7 +179,6 @@ const neutrino_controls = {
     is_m: {
         title: '\\(\\mu\\)',
         unit: '',
-        default_value: defaultNeutrinoData.is_m,
         category: 'state',
         control: {
             type: 'slider',
@@ -200,7 +191,6 @@ const neutrino_controls = {
     is_t: {
         title: '\\(\\tau\\)',
         unit: '',
-        default_value: defaultNeutrinoData.is_t,
         category: 'state',
         control: {
             type: 'slider',
@@ -249,20 +239,20 @@ function pmns(t12, t23, t13) {
     ]);
 }
 
-function propagation_step(pmns_matrix, ms13, ms23, dL, E) {
+function propagation_step(pmns_matrix, ms12, ms23, dL, E) {
     E = E / 1000;
-    ms13 = ms13 * 1e-4;
+    ms12 = ms12 * 1e-4;
     ms23 = ms23 * 1e-4;
 
-    const propagator = math.matrix([[math.exp(math.complex(0, -ms13 * 2.54 * dL / E)), 0, 0],
-                                    [0, math.exp(math.complex(0, -ms23 * 2.54 * dL / E)), 0],
-                                    [0, 0, 1]]);
+    const propagator = math.matrix([[math.exp(math.complex(0, -ms12 * 2.54 * dL / E)), 0, 0],
+                                    [0, 1, 0],
+                                    [0, 0, math.exp(math.complex(0, ms23 * 2.54 * dL / E))]]);
 
     return math.multiply(pmns_matrix, propagator, math.transpose(pmns_matrix));
 }
 
-function propagate(initial_state, pmns_matrix, ms13, ms23, L, E) {
-    const propagator = propagation_step(pmns_matrix, ms13, ms23, L, E);
+function propagate(initial_state, pmns_matrix, ms12, ms23, L, E) {
+    const propagator = propagation_step(pmns_matrix, ms12, ms23, L, E);
 
     return math.multiply(propagation_step, initial_state);
 }
@@ -272,7 +262,7 @@ function state_to_probabilies(state) {
 }
 
 function plot_propagation(neutrino_data) {
-    const {t12, t23, t13, ms13, ms23, L_max, E, is_e, is_m, is_t} = neutrino_data;
+    const {t12, t23, t13, ms12, ms23, L_max, E, is_e, is_m, is_t} = neutrino_data;
 
     const norm = math.sqrt(is_e * is_e + is_m * is_m + is_t * is_t);
     let state = math.matrix([
@@ -311,7 +301,7 @@ function plot_propagation(neutrino_data) {
         }
     ];
 
-    const propagator = propagation_step(pmns_matrix, ms13, ms23, dL, E)
+    const propagator = propagation_step(pmns_matrix, ms12, ms23, dL, E)
 
     for (const length of lengths._data) {
         state = math.multiply(propagator, state);
@@ -352,17 +342,20 @@ function renderPmnsMatrix(pmns_matrix) {
     renderMathInElement(pmnsElement);
 }
 
-
-document.addEventListener("DOMContentLoaded", (event) => {
-    renderControls();
+function setUpApp() {
+    const neutrino_data = {...defaultNeutrinoData, ...getWindowNeutrinoData()};
+    renderControls(neutrino_data);
 
     const {t12, t23, t13} = getNeutrinoData();
     renderPmnsMatrix(pmns(t12, t23, t13));
 
-    plot_propagation(defaultNeutrinoData);
-});
+    plot_propagation(neutrino_data);
+}
 
-function makeControlElement(id, element) {
+document.addEventListener("DOMContentLoaded", setUpApp);
+window.addEventListener("popstate", setUpApp);
+
+function makeControlElement(id, element, default_value) {
     const {min, max, step} = element.control;
 
     const input_div = document.createElement("div");
@@ -370,7 +363,7 @@ function makeControlElement(id, element) {
     const input = document.createElement("input");
 
 
-    label.innerHTML = `${element.title} = <span id="val_${id}">${element.default_value}</span>${element.unit}`;
+    label.innerHTML = `${element.title} = <span id="val_${id}">${default_value}</span>${element.unit}`;
     label.htmlFor = id
 
     input.type = "range";
@@ -378,7 +371,7 @@ function makeControlElement(id, element) {
     input.min = min;
     input.max = max;
     input.id = id;
-    input.value = element.default_value;
+    input.value = default_value;
     input.label = label;
 
     input_div.className = "input-group vertical";
@@ -388,7 +381,8 @@ function makeControlElement(id, element) {
     return input_div;
 }
 
-function renderControls() {
+function renderControls(neutrino_data) {
+    controls.innerHTML = "";
     for (let category in control_categories) {
         const category_element = document.createElement("fieldset");
         category_element.id = category;
@@ -403,7 +397,7 @@ function renderControls() {
     for (let id in neutrino_controls) {
         const element = neutrino_controls[id];
         const group = controls.querySelector("#" + element.category);
-        const control = makeControlElement(id, element);
+        const control = makeControlElement(id, element, neutrino_data[id]);
 
         group.appendChild(control);
     }
@@ -426,17 +420,37 @@ function updateControlLabel(control) {
     control.label.childNodes.item(3).textContent = control.value;
 }
 
+
+function serializeNeutrinoData(data) {
+    return encodeURI(JSON.stringify(data));
+}
+
+function getWindowNeutrinoData() {
+    const data_string = decodeURI(window.location.href);
+    return JSON.parse(data_string.slice(data_string.indexOf("?settings=") + "?settings=".length));
+}
+
+let historyTimeout = null;
+
 function handleInput(event) {
     const control = event.target;
     normalizeSliders()
 
     const neutrino_data = getNeutrinoData();
-    const {t12, t23, t13} = neutrino_data;
+    const current_href = window.location.href;
 
+    window.clearTimeout(historyTimeout);
+    historyTimeout = window.setTimeout(() => {
+        window.clearTimeout(historyTimeout);
+        window.history.pushState(neutrino_data, "",
+                                 current_href.slice(0, current_href.indexOf("?"))
+                                 + "?settings=" + serializeNeutrinoData(neutrino_data))
+    }, 1000);
+
+    const {t12, t23, t13} = neutrino_data;
     renderPmnsMatrix(pmns(t12, t23, t13));
 
     updateControlLabel(control);
-
     plot_propagation(neutrino_data);
 }
 

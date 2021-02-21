@@ -16,6 +16,7 @@
     <body>
         <header>
             <a href="#" class="logo">Neutrino Oscillation Playground</a>
+            <a href="https://github.com/vale981/neutrino_oscillations" class="button">Source Code</a>
         </header>
 
         <div class="container">
@@ -34,7 +35,34 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card" id="pmns">
+                        <div class="col-sm-4">
+                            <div class="card fluid" id="pmns"></div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card fluid">
+                                <div class="section"><h2>Tipps</h2></div>
+                                <div class="section"><ul>
+                                    <li>Hover over the sliders and use your mouse wheel to fine-tune the values.</li>
+                                    <li>Report Bugs over at <a href="https://github.com/vale981/neutrino_oscillations">GitHub</a>.<br>
+                                        This was hacked together in a few hours, so there might be typos in the formulas :).
+                                    </li>
+                                    <li>If you don't touch the
+                                        controlls for more than a
+                                        second, the settings will be
+                                        saved into the tab-history.
+                                        That means you can use the
+                                        back and forward buttons in
+                                        your browser to recover those
+                                        settings. Furthermore the
+                                        settings are being saved in
+                                        the url. So if you want to
+                                        share your current plot with
+                                        someone, just send them the
+                                        current url.
+                                    </li>
+                                </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -45,5 +73,9 @@
         <script src="lib/chart.min.js"></script>
         <script src="lib/math.min.js"></script>
         <script src="index.js"></script>
+
+        <footer>
+            <p>Made by <a href="https://github.com/">Valentin Boettcher</a></p>
+        </footer>
     </body>
 </html>

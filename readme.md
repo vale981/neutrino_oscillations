@@ -8,5 +8,10 @@ _Just kidding_. It's just a plot of the neutrino survival propability
 ## See it in the Wild
 Head over to https://protagon.space/stuff/neutrino_oscillations/.
 
+## Libraries Used
+Thanks to [mini.css](https://minicss.org),
+[math.js](https://mathjs.org/) and
+[chart.js](https://www.chartjs.org).
+
 ## Todo
  - [ ] Make the initial state configurable (trivial...).
