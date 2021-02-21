@@ -427,12 +427,14 @@ function serializeNeutrinoData(data) {
 
 function getWindowNeutrinoData() {
     const data_string = decodeURI(window.location.href);
-    const json = data_string.slice(data_string.indexOf("?settings=") + "?settings=".length);
+    const settings_index = data_string.indexOf("?settings=");
 
-    if(!json)
+    if (settings_index === -1)
         return defaultNeutrinoData;
 
-    return JSON.parse();
+    const json = data_string.slice(data_string.indexOf("?settings=") + "?settings=".length);
+
+    return JSON.parse(json);
 }
 
 let historyTimeout = null;
