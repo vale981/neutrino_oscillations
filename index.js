@@ -273,11 +273,14 @@ function plot_propagation(neutrino_data) {
 
     const pmns_matrix = pmns(t12, t23, t13);
 
-    const dL = ((L_max) / 1000);
+    const dL = math.round((L_max) / 1000, 6);
+    console.log( dL );
+
     const lengths = math.range(0, L_max, dL);
 
     const common_options = {
         pointRadius: 0,
+        borderWidth: 1,
     };
 
     const datasets = [
