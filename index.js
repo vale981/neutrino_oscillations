@@ -427,7 +427,12 @@ function serializeNeutrinoData(data) {
 
 function getWindowNeutrinoData() {
     const data_string = decodeURI(window.location.href);
-    return JSON.parse(data_string.slice(data_string.indexOf("?settings=") + "?settings=".length));
+    const json = data_string.slice(data_string.indexOf("?settings=") + "?settings=".length);
+
+    if(!json)
+        return defaultNeutrinoData;
+
+    return JSON.parse();
 }
 
 let historyTimeout = null;
