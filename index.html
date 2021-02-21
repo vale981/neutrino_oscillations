@@ -20,66 +20,27 @@
 
         <div class="container">
             <div class="row">
-                <div id="neutrinos" class="card fluid">
-                    <canvas id="neutrinorender"></canvas>
-                </div>
-            </div>
-            <div class="row">
-                <div class="card fluid" id="settings">
-                    <h3>Current Settings</h3>
+                <div class="col-sm-2">
                     <div class="row">
-                        <div class="col-sm-6" id="pmns">
+                        <h1>Controls</h1>
+                        <form id="controls">
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <div class="row">
+                        <div id="neutrinos" class="card fluid">
+                            <canvas id="neutrinorender"></canvas>
                         </div>
-                        <div class="col-sm-3" id="sliders_1">
-                        </div>
-                        <div class="col-sm-3" id="sliders_2">
+                    </div>
+                    <div class="row">
+                        <div class="card" id="pmns">
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <form id="controls">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <fieldset>
-                                <legend>Mixing Angles in \(^\circ\)</legend>
-                                <label for="t12">\(\theta_{12}\)</label>
-                                <input type="range" step=".1" min="0" max="90" id="t12" />
-                                <br>
-
-                                <label for="t13">\(\theta_{13}\)</label>
-                                <input type="range" step=".1" max="90" id="t13" />
-                                <br>
-
-                                <label for="t23">\(\theta_{23}\)</label>
-                                <input type="range" step=".1" min="0" max="90" id="t23" />
-                            </fieldset>
-
-                            <fieldset>
-                                <legend>Squared Mass Differences \([10^{-4}\text{eV}^{2}]\)</legend>
-                                <label for="ms13">\(\Delta m_{13}^2\)</label>
-                                <input type="range" step=".1" min="0" max="30" id="ms13" />
-                                <br>
-                                <label for="ms23">\(\Delta m_{23}^2\)</label>
-                                <input type="range" step=".1" min="0" max="30" id="ms23" />
-                            </fieldset>
-                        </div>
-
-                        <div class="col-sm-6">
-                            <fieldset>
-                                <legend>Observatory Settings</legend>
-                                <label for="L_max">\(L_{\text{max}}\) [km]</label>
-                                <input type="range" min="0" max="1000" id="L_max" />
-                                <br>
-
-                                <label for="energy">\(E\) [MeV]</label>
-                                <input type="range" step=".1" min="0" max="1000" id="energy" />
-                            </fieldset>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
+
 
         <script src="lib/chart.min.js"></script>
         <script src="lib/math.min.js"></script>
