@@ -281,16 +281,16 @@ function plot_propagation(neutrino_data) {
         [is_t / norm]
     ]);
 
-    pmns_matrix = pmns(t12, t23, t13);
+    const pmns_matrix = pmns(t12, t23, t13);
 
-    dL = ((L_max) / 1000);
-    lengths = math.range(0, L_max, dL);
+    const dL = ((L_max) / 1000);
+    const lengths = math.range(0, L_max, dL);
 
-    common_options = {
+    const common_options = {
         pointRadius: 0,
     };
 
-    datasets = [
+    const datasets = [
         {
             data: [],
             borderColor: 'green',
@@ -311,7 +311,7 @@ function plot_propagation(neutrino_data) {
         }
     ];
 
-    propagator = propagation_step(pmns_matrix, ms13, ms23, dL, E)
+    const propagator = propagation_step(pmns_matrix, ms13, ms23, dL, E)
 
     for (const length of lengths._data) {
         state = math.multiply(propagator, state);
